@@ -34,7 +34,7 @@ export const getPosts = async (req: AuthRequest, res: Response, next: NextFuncti
     const { mood, postType, page = 1, limit = 20 } = req.query;
     const offset = (Number(page) - 1) * Number(limit);
 
-    const where: any = {};
+    const where: any = { isDeleted: false };
     if (mood) where.mood = mood;
     if (postType) where.postType = postType;
 
@@ -108,7 +108,7 @@ export const getPostById = async (req: AuthRequest, res: Response, next: NextFun
       ],
     });
 
-    if (!post) {
+    if (!post || post.isDeleted) {
       throw new AppError('Post not found', 404);
     }
 
@@ -141,7 +141,10 @@ export const deletePost = async (req: AuthRequest, res: Response, next: NextFunc
       throw new AppError('Unauthorized', 403);
     }
 
-    await post.destroy();
+    post.isDeleted = true;
+    post.deletedAt = new Date();
+    await post.save();
+
 
     res.json({ message: 'Post deleted successfully' });
   } catch (error) {
