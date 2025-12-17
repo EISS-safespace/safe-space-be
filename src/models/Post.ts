@@ -30,6 +30,8 @@ interface PostAttributes {
   audioUrl?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  isDeleted: boolean;
+  deletedAt?: Date;
 }
 
 interface PostCreationAttributes extends Optional<PostAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
@@ -46,6 +48,8 @@ class Post extends Model<PostAttributes, PostCreationAttributes> implements Post
   declare audioUrl?: string;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
+  declare isDeleted: boolean;
+  declare deletedAt?: Date;
 }
 
 Post.init(
@@ -91,6 +95,15 @@ Post.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    isDeleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+
   },
   {
     sequelize,
