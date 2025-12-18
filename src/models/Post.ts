@@ -30,6 +30,7 @@ interface PostAttributes {
   audioUrl?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  deletedAt?: Date;
 }
 
 interface PostCreationAttributes extends Optional<PostAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
@@ -46,6 +47,7 @@ class Post extends Model<PostAttributes, PostCreationAttributes> implements Post
   declare audioUrl?: string;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
+  declare readonly deletedAt?: Date;
 }
 
 Post.init(
@@ -96,6 +98,7 @@ Post.init(
     sequelize,
     tableName: 'posts',
     timestamps: true,
+    paranoid: true,
   }
 );
 
