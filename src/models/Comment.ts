@@ -9,6 +9,7 @@ interface CommentAttributes {
   isAnonymous: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+  deletedAt?: Date;
 }
 
 interface CommentCreationAttributes extends Optional<CommentAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
@@ -21,6 +22,8 @@ class Comment extends Model<CommentAttributes, CommentCreationAttributes> implem
   declare isAnonymous: boolean;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
+  declare readonly deletedAt?: Date;
+
 }
 
 Comment.init(
@@ -59,6 +62,7 @@ Comment.init(
     sequelize,
     tableName: 'comments',
     timestamps: true,
+    paranoid: true,
   }
 );
 
