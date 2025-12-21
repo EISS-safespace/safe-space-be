@@ -1,3 +1,4 @@
+import commentRoutes from './commentRoutes.js';
 import { Router } from 'express';
 import authRoutes from './authRoutes.js';
 import postRoutes from './postRoutes.js';
@@ -8,6 +9,8 @@ const router = Router();
 router.use('/auth', authRoutes);
 router.use('/posts', postRoutes);
 router.use('/mood', moodRoutes);
+router.use('/comments', commentRoutes);
+
 
 // Health check endpoint
 router.get('/health', (req, res) => {

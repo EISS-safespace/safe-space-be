@@ -84,29 +84,53 @@ export const getPostById = async (req: AuthRequest, res: Response, next: NextFun
     const { id } = req.params;
 
     const post = await Post.findByPk(id, {
+  include: [
+    {
+      model: User,
+      as: 'user',
+      attributes: ['id', 'username', 'displayName', 'avatarUrl', 'isVerifiedTherapist'],
+    },
+    {
+      model: Comment,
+      as: 'comments',
+      where: { parentId: null },
+      required: false,
       include: [
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'username', 'displayName', 'avatarUrl', 'isVerifiedTherapist'],
+          attributes: ['id', 'username', 'displayName', 'avatarUrl'],
         },
         {
           model: Comment,
-          as: 'comments',
+          as: 'replies',
           include: [
             {
               model: User,
               as: 'user',
               attributes: ['id', 'username', 'displayName', 'avatarUrl'],
             },
+            {
+              model: Comment,
+              as: 'replies',
+              include: [
+                {
+                  model: User,
+                  as: 'user',
+                  attributes: ['id', 'username', 'displayName', 'avatarUrl'],
+                },
+              ],
+            },
           ],
         },
-        {
-          model: Reaction,
-          as: 'reactions',
-        },
       ],
-    });
+    },
+    {
+      model: Reaction,
+      as: 'reactions',
+    },
+  ],
+});
 
     if (!post) {
       throw new AppError('Post not found', 404);
@@ -141,7 +165,7 @@ export const deletePost = async (req: AuthRequest, res: Response, next: NextFunc
       throw new AppError('Unauthorized', 403);
     }
 
-    await post.destroy();
+    await post.destroy({ force: false });
 
     res.json({ message: 'Post deleted successfully' });
   } catch (error) {

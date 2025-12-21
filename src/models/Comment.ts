@@ -5,6 +5,7 @@ interface CommentAttributes {
   id: string;
   postId: string;
   userId: string;
+  parentId?: string | null;
   content: string;
   isAnonymous: boolean;
   createdAt?: Date;
@@ -12,19 +13,21 @@ interface CommentAttributes {
   deletedAt?: Date;
 }
 
+
 interface CommentCreationAttributes extends Optional<CommentAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 
 class Comment extends Model<CommentAttributes, CommentCreationAttributes> implements CommentAttributes {
   declare id: string;
   declare postId: string;
   declare userId: string;
+  declare parentId?: string | null;
   declare content: string;
   declare isAnonymous: boolean;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
   declare readonly deletedAt?: Date;
-
 }
+
 
 Comment.init(
   {
@@ -49,6 +52,14 @@ Comment.init(
         key: 'id',
       },
     },
+    parentId: {
+  type: DataTypes.UUID,
+  allowNull: true,
+  references: {
+    model: 'comments',
+    key: 'id',
+  },
+},
     content: {
       type: DataTypes.TEXT,
       allowNull: false,

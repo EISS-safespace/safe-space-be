@@ -14,6 +14,16 @@ Comment.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
 Post.hasMany(Comment, { foreignKey: 'postId', as: 'comments' });
 Comment.belongsTo(Post, { foreignKey: 'postId', as: 'post' });
+// Self-referencing comment replies
+Comment.hasMany(Comment, {
+  foreignKey: 'parentId',
+  as: 'replies',
+});
+
+Comment.belongsTo(Comment, {
+  foreignKey: 'parentId',
+  as: 'parent',
+});
 
 User.hasMany(Reaction, { foreignKey: 'userId', as: 'reactions' });
 Reaction.belongsTo(User, { foreignKey: 'userId', as: 'user' });
