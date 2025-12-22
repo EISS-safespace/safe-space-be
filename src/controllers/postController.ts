@@ -3,6 +3,8 @@ import { Post, User, Comment, Reaction } from '../models/index.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { AuthRequest } from '../middleware/auth.js';
 import { getAnonymousDisplayName } from '../utils/anonymousAvatar.js';
+import { serializeComment } from '../utils/commentSerializer.js';
+
 
 export const createPost = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -143,6 +145,13 @@ export const getPostById = async (req: AuthRequest, res: Response, next: NextFun
         isAnonymous: true,
       };
     }
+// Serialize comments with controlled depth
+postData.comments = (postData.comments || []).map((comment: any) =>
+  serializeComment(comment, {
+    maxDepth: 3,
+    currentDepth: 1,
+  })
+);
 
     res.json({ post: postData });
   } catch (error) {
@@ -172,4 +181,3 @@ export const deletePost = async (req: AuthRequest, res: Response, next: NextFunc
     next(error);
   }
 };
-
