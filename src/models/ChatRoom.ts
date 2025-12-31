@@ -19,6 +19,7 @@ interface ChatRoomAttributes {
   updatedAt?: Date;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface ChatRoomCreationAttributes extends Optional<ChatRoomAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 
 class ChatRoom extends Model<ChatRoomAttributes, ChatRoomCreationAttributes> implements ChatRoomAttributes {
