@@ -51,10 +51,11 @@ export const logger = winston.createLogger({
 
 // If we're not in production, log to the console with colors
 if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: consoleFormat,
-  }));
+  logger.add(
+    new winston.transports.Console({
+      format: consoleFormat,
+    })
+  );
 }
 
 export default logger;
-

@@ -41,4 +41,3 @@ export const serviceRoutes = {
     target: process.env.NOTIFICATION_SERVICE_URL || 'http://notification-service:3011',
   },
 };
-

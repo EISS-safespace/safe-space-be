@@ -30,11 +30,13 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Request logging
-app.use(morgan('combined', {
-  stream: {
-    write: (message: string) => logger.info(message.trim()),
-  },
-}));
+app.use(
+  morgan('combined', {
+    stream: {
+      write: (message: string) => logger.info(message.trim()),
+    },
+  })
+);
 
 // Body parsing
 app.use(express.json({ limit: '10mb' }));
@@ -69,107 +71,143 @@ app.get('/', (req: Request, res: Response) => {
 // ============================================
 
 // Auth Service
-app.use('/api/auth', createProxyMiddleware({
-  target: process.env.AUTH_SERVICE_URL || 'http://auth-service:3002',
-  changeOrigin: true,
-  pathRewrite: { '^/api/auth': '' },
-  onError: (err, req, res) => {
-    logger.error('Auth Service Proxy Error:', err);
-    (res as Response).status(503).json({ error: 'Auth service unavailable' });
-  },
-}));
+app.use(
+  '/api/auth',
+  createProxyMiddleware({
+    target: process.env.AUTH_SERVICE_URL || 'http://auth-service:3002',
+    changeOrigin: true,
+    pathRewrite: { '^/api/auth': '' },
+    onError: (err, req, res) => {
+      logger.error('Auth Service Proxy Error:', err);
+      (res as Response).status(503).json({ error: 'Auth service unavailable' });
+    },
+  })
+);
 
 // User Service
-app.use('/api/users', createProxyMiddleware({
-  target: process.env.USER_SERVICE_URL || 'http://user-service:3003',
-  changeOrigin: true,
-  pathRewrite: { '^/api/users': '' },
-  onError: (err, req, res) => {
-    logger.error('User Service Proxy Error:', err);
-    (res as Response).status(503).json({ error: 'User service unavailable' });
-  },
-}));
+app.use(
+  '/api/users',
+  createProxyMiddleware({
+    target: process.env.USER_SERVICE_URL || 'http://user-service:3003',
+    changeOrigin: true,
+    pathRewrite: { '^/api/users': '' },
+    onError: (err, req, res) => {
+      logger.error('User Service Proxy Error:', err);
+      (res as Response).status(503).json({ error: 'User service unavailable' });
+    },
+  })
+);
 
 // Content Service
-app.use('/api/posts', createProxyMiddleware({
-  target: process.env.CONTENT_SERVICE_URL || 'http://content-service:3004',
-  changeOrigin: true,
-  pathRewrite: { '^/api/posts': '/posts' },
-  onError: (err, req, res) => {
-    logger.error('Content Service Proxy Error:', err);
-    (res as Response).status(503).json({ error: 'Content service unavailable' });
-  },
-}));
+app.use(
+  '/api/posts',
+  createProxyMiddleware({
+    target: process.env.CONTENT_SERVICE_URL || 'http://content-service:3004',
+    changeOrigin: true,
+    pathRewrite: { '^/api/posts': '/posts' },
+    onError: (err, req, res) => {
+      logger.error('Content Service Proxy Error:', err);
+      (res as Response).status(503).json({ error: 'Content service unavailable' });
+    },
+  })
+);
 
-app.use('/api/comments', createProxyMiddleware({
-  target: process.env.CONTENT_SERVICE_URL || 'http://content-service:3004',
-  changeOrigin: true,
-  pathRewrite: { '^/api/comments': '/comments' },
-}));
+app.use(
+  '/api/comments',
+  createProxyMiddleware({
+    target: process.env.CONTENT_SERVICE_URL || 'http://content-service:3004',
+    changeOrigin: true,
+    pathRewrite: { '^/api/comments': '/comments' },
+  })
+);
 
-app.use('/api/hope-wall', createProxyMiddleware({
-  target: process.env.CONTENT_SERVICE_URL || 'http://content-service:3004',
-  changeOrigin: true,
-  pathRewrite: { '^/api/hope-wall': '/hope-wall' },
-}));
+app.use(
+  '/api/hope-wall',
+  createProxyMiddleware({
+    target: process.env.CONTENT_SERVICE_URL || 'http://content-service:3004',
+    changeOrigin: true,
+    pathRewrite: { '^/api/hope-wall': '/hope-wall' },
+  })
+);
 
 // Mood Service
-app.use('/api/mood', createProxyMiddleware({
-  target: process.env.MOOD_SERVICE_URL || 'http://mood-service:3005',
-  changeOrigin: true,
-  pathRewrite: { '^/api/mood': '' },
-  onError: (err, req, res) => {
-    logger.error('Mood Service Proxy Error:', err);
-    (res as Response).status(503).json({ error: 'Mood service unavailable' });
-  },
-}));
+app.use(
+  '/api/mood',
+  createProxyMiddleware({
+    target: process.env.MOOD_SERVICE_URL || 'http://mood-service:3005',
+    changeOrigin: true,
+    pathRewrite: { '^/api/mood': '' },
+    onError: (err, req, res) => {
+      logger.error('Mood Service Proxy Error:', err);
+      (res as Response).status(503).json({ error: 'Mood service unavailable' });
+    },
+  })
+);
 
 // Chat Service
-app.use('/api/chat', createProxyMiddleware({
-  target: process.env.CHAT_SERVICE_URL || 'http://chat-service:3006',
-  changeOrigin: true,
-  pathRewrite: { '^/api/chat': '' },
-  ws: true, // Enable WebSocket proxying
-  onError: (err, req, res) => {
-    logger.error('Chat Service Proxy Error:', err);
-    (res as Response).status(503).json({ error: 'Chat service unavailable' });
-  },
-}));
+app.use(
+  '/api/chat',
+  createProxyMiddleware({
+    target: process.env.CHAT_SERVICE_URL || 'http://chat-service:3006',
+    changeOrigin: true,
+    pathRewrite: { '^/api/chat': '' },
+    ws: true, // Enable WebSocket proxying
+    onError: (err, req, res) => {
+      logger.error('Chat Service Proxy Error:', err);
+      (res as Response).status(503).json({ error: 'Chat service unavailable' });
+    },
+  })
+);
 
 // Moderation Service
-app.use('/api/moderation', createProxyMiddleware({
-  target: process.env.MODERATION_SERVICE_URL || 'http://moderation-service:3007',
-  changeOrigin: true,
-  pathRewrite: { '^/api/moderation': '' },
-}));
+app.use(
+  '/api/moderation',
+  createProxyMiddleware({
+    target: process.env.MODERATION_SERVICE_URL || 'http://moderation-service:3007',
+    changeOrigin: true,
+    pathRewrite: { '^/api/moderation': '' },
+  })
+);
 
 // Wellness Service
-app.use('/api/wellness', createProxyMiddleware({
-  target: process.env.WELLNESS_SERVICE_URL || 'http://wellness-service:3008',
-  changeOrigin: true,
-  pathRewrite: { '^/api/wellness': '' },
-}));
+app.use(
+  '/api/wellness',
+  createProxyMiddleware({
+    target: process.env.WELLNESS_SERVICE_URL || 'http://wellness-service:3008',
+    changeOrigin: true,
+    pathRewrite: { '^/api/wellness': '' },
+  })
+);
 
 // Professional Service
-app.use('/api/professional', createProxyMiddleware({
-  target: process.env.PROFESSIONAL_SERVICE_URL || 'http://professional-service:3009',
-  changeOrigin: true,
-  pathRewrite: { '^/api/professional': '' },
-}));
+app.use(
+  '/api/professional',
+  createProxyMiddleware({
+    target: process.env.PROFESSIONAL_SERVICE_URL || 'http://professional-service:3009',
+    changeOrigin: true,
+    pathRewrite: { '^/api/professional': '' },
+  })
+);
 
 // Media Service
-app.use('/api/media', createProxyMiddleware({
-  target: process.env.MEDIA_SERVICE_URL || 'http://media-service:3010',
-  changeOrigin: true,
-  pathRewrite: { '^/api/media': '' },
-}));
+app.use(
+  '/api/media',
+  createProxyMiddleware({
+    target: process.env.MEDIA_SERVICE_URL || 'http://media-service:3010',
+    changeOrigin: true,
+    pathRewrite: { '^/api/media': '' },
+  })
+);
 
 // Notification Service
-app.use('/api/notifications', createProxyMiddleware({
-  target: process.env.NOTIFICATION_SERVICE_URL || 'http://notification-service:3011',
-  changeOrigin: true,
-  pathRewrite: { '^/api/notifications': '' },
-}));
+app.use(
+  '/api/notifications',
+  createProxyMiddleware({
+    target: process.env.NOTIFICATION_SERVICE_URL || 'http://notification-service:3011',
+    changeOrigin: true,
+    pathRewrite: { '^/api/notifications': '' },
+  })
+);
 
 // ============================================
 // Error Handling
@@ -220,4 +258,3 @@ process.on('SIGINT', () => {
 });
 
 export default app;
-
