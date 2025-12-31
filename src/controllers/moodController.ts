@@ -1,10 +1,13 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { MoodEntry } from '../models/index.js';
-import { AppError } from '../middleware/errorHandler.js';
 import { AuthRequest } from '../middleware/auth.js';
 import { Op } from 'sequelize';
 
-export const createMoodEntry = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+export const createMoodEntry = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const userId = req.userId!;
     const { mood, intensity, notes, date } = req.body;
@@ -26,11 +29,16 @@ export const createMoodEntry = async (req: AuthRequest, res: Response, next: Nex
   }
 };
 
-export const getMoodEntries = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+export const getMoodEntries = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const userId = req.userId!;
     const { startDate, endDate } = req.query;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = { userId };
 
     if (startDate && endDate) {
@@ -50,7 +58,11 @@ export const getMoodEntries = async (req: AuthRequest, res: Response, next: Next
   }
 };
 
-export const getMoodStats = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+export const getMoodStats = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const userId = req.userId!;
     const { days = 30 } = req.query;
@@ -77,7 +89,8 @@ export const getMoodStats = async (req: AuthRequest, res: Response, next: NextFu
       totalIntensity += entry.intensity;
     });
 
-    const averageIntensity = moodEntries.length > 0 ? totalIntensity / moodEntries.length : 0;
+    const averageIntensity =
+      moodEntries.length > 0 ? totalIntensity / moodEntries.length : 0;
 
     res.json({
       moodEntries,
@@ -91,4 +104,3 @@ export const getMoodStats = async (req: AuthRequest, res: Response, next: NextFu
     next(error);
   }
 };
-

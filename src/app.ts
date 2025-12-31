@@ -11,10 +11,12 @@ const app: Application = express();
 
 // Middleware
 app.use(helmet());
-app.use(cors({
-  origin: config.corsOrigin,
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: config.corsOrigin,
+    credentials: true,
+  }),
+);
 app.use(morgan(config.nodeEnv === 'development' ? 'dev' : 'combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -30,7 +32,7 @@ export const connectDatabase = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
     console.log('✅ Database connection established successfully.');
-    
+
     if (config.nodeEnv === 'development') {
       await sequelize.sync({ alter: true });
       console.log('✅ Database synchronized.');
@@ -42,4 +44,3 @@ export const connectDatabase = async (): Promise<void> => {
 };
 
 export default app;
-

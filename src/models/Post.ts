@@ -32,9 +32,13 @@ interface PostAttributes {
   updatedAt?: Date;
 }
 
-interface PostCreationAttributes extends Optional<PostAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+interface PostCreationAttributes
+  extends Optional<PostAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 
-class Post extends Model<PostAttributes, PostCreationAttributes> implements PostAttributes {
+class Post
+  extends Model<PostAttributes, PostCreationAttributes>
+  implements PostAttributes
+{
   declare id: string;
   declare userId: string;
   declare content: string;
@@ -96,8 +100,7 @@ Post.init(
     sequelize,
     tableName: 'posts',
     timestamps: true,
-  }
+  },
 );
 
 export default Post;
-

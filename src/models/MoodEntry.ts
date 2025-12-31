@@ -22,9 +22,13 @@ interface MoodEntryAttributes {
   updatedAt?: Date;
 }
 
-interface MoodEntryCreationAttributes extends Optional<MoodEntryAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+interface MoodEntryCreationAttributes
+  extends Optional<MoodEntryAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 
-class MoodEntry extends Model<MoodEntryAttributes, MoodEntryCreationAttributes> implements MoodEntryAttributes {
+class MoodEntry
+  extends Model<MoodEntryAttributes, MoodEntryCreationAttributes>
+  implements MoodEntryAttributes
+{
   declare id: string;
   declare userId: string;
   declare mood: MoodType;
@@ -75,8 +79,7 @@ MoodEntry.init(
     sequelize,
     tableName: 'mood_entries',
     timestamps: true,
-  }
+  },
 );
 
 export default MoodEntry;
-

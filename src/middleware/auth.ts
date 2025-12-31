@@ -6,7 +6,11 @@ export interface AuthRequest extends Request {
   userId?: string;
 }
 
-export const authenticate = (req: AuthRequest, res: Response, next: NextFunction): void => {
+export const authenticate = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): void => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -20,12 +24,16 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
 
     req.userId = decoded.userId;
     next();
-  } catch (error) {
+  } catch {
     res.status(401).json({ error: 'Invalid token' });
   }
 };
 
-export const optionalAuth = (req: AuthRequest, res: Response, next: NextFunction): void => {
+export const optionalAuth = (
+  req: AuthRequest,
+  _res: Response,
+  next: NextFunction,
+): void => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -36,9 +44,8 @@ export const optionalAuth = (req: AuthRequest, res: Response, next: NextFunction
     }
 
     next();
-  } catch (error) {
+  } catch {
     // Continue without authentication
     next();
   }
 };
-

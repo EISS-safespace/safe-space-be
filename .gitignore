@@ -11,6 +11,8 @@ coverage
 
 # Transpiled files
 build/
+dist/
+*.tsbuildinfo
 
 # VS Code
 .vscode
@@ -32,3 +34,24 @@ build/
 
 # Misc
 .DS_Store
+
+# Docker
+docker-compose.override.yml
+
+# Backups
+backups/
+
+# Logs
+logs/
+*.log
+
+# SSL Certificates
+nginx/ssl/*.pem
+nginx/ssl/*.key
+
+# Database dumps
+*.sql
+*.dump
+
+# Exception: Keep infrastructure SQL files
+!infrastructure/**/*.sql

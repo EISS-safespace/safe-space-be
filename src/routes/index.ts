@@ -10,9 +10,8 @@ router.use('/posts', postRoutes);
 router.use('/mood', moodRoutes);
 
 // Health check endpoint
-router.get('/health', (req, res) => {
+router.get('/health', (_req, res) => {
   res.json({ status: 'ok', message: 'SafeSpace API is running' });
 });
 
 export default router;
-

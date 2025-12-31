@@ -1,13 +1,25 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { Post, User, Comment, Reaction } from '../models/index.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { AuthRequest } from '../middleware/auth.js';
 import { getAnonymousDisplayName } from '../utils/anonymousAvatar.js';
 
-export const createPost = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+export const createPost = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const userId = req.userId!;
-    const { content, isAnonymous, postType, triggerWarnings, mood, imageUrls, audioUrl } = req.body;
+    const {
+      content,
+      isAnonymous,
+      postType,
+      triggerWarnings,
+      mood,
+      imageUrls,
+      audioUrl,
+    } = req.body;
 
     const post = await Post.create({
       userId,
@@ -29,11 +41,16 @@ export const createPost = async (req: AuthRequest, res: Response, next: NextFunc
   }
 };
 
-export const getPosts = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+export const getPosts = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const { mood, postType, page = 1, limit = 20 } = req.query;
     const offset = (Number(page) - 1) * Number(limit);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
     if (mood) where.mood = mood;
     if (postType) where.postType = postType;
@@ -44,7 +61,13 @@ export const getPosts = async (req: AuthRequest, res: Response, next: NextFuncti
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'username', 'displayName', 'avatarUrl', 'isVerifiedTherapist'],
+          attributes: [
+            'id',
+            'username',
+            'displayName',
+            'avatarUrl',
+            'isVerifiedTherapist',
+          ],
         },
         {
           model: Reaction,
@@ -58,6 +81,7 @@ export const getPosts = async (req: AuthRequest, res: Response, next: NextFuncti
 
     // Transform posts to hide user info for anonymous posts
     const transformedPosts = posts.rows.map((post) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const postData = post.toJSON() as any;
       if (postData.isAnonymous) {
         postData.user = {
@@ -79,7 +103,11 @@ export const getPosts = async (req: AuthRequest, res: Response, next: NextFuncti
   }
 };
 
-export const getPostById = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+export const getPostById = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const { id } = req.params;
 
@@ -88,7 +116,13 @@ export const getPostById = async (req: AuthRequest, res: Response, next: NextFun
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'username', 'displayName', 'avatarUrl', 'isVerifiedTherapist'],
+          attributes: [
+            'id',
+            'username',
+            'displayName',
+            'avatarUrl',
+            'isVerifiedTherapist',
+          ],
         },
         {
           model: Comment,
@@ -112,6 +146,7 @@ export const getPostById = async (req: AuthRequest, res: Response, next: NextFun
       throw new AppError('Post not found', 404);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const postData = post.toJSON() as any;
     if (postData.isAnonymous) {
       postData.user = {
@@ -126,7 +161,11 @@ export const getPostById = async (req: AuthRequest, res: Response, next: NextFun
   }
 };
 
-export const deletePost = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+export const deletePost = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const userId = req.userId!;
     const { id } = req.params;
@@ -148,4 +187,3 @@ export const deletePost = async (req: AuthRequest, res: Response, next: NextFunc
     next(error);
   }
 };
-
