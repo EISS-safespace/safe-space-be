@@ -11,6 +11,16 @@ interface UserAttributes {
   avatarUrl?: string;
   isVerifiedTherapist: boolean;
   allowAnonymous: boolean;
+  emailVerified: boolean;
+  emailVerifiedAt?: Date;
+  phoneNumber?: string;
+  phoneVerified: boolean;
+  accountLocked: boolean;
+  lockReason?: string;
+  lockedAt?: Date;
+  failedLoginAttempts: number;
+  lastLoginAt?: Date;
+  lastLoginIp?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -31,6 +41,16 @@ class User
   declare avatarUrl?: string;
   declare isVerifiedTherapist: boolean;
   declare allowAnonymous: boolean;
+  declare emailVerified: boolean;
+  declare emailVerifiedAt?: Date;
+  declare phoneNumber?: string;
+  declare phoneVerified: boolean;
+  declare accountLocked: boolean;
+  declare lockReason?: string;
+  declare lockedAt?: Date;
+  declare failedLoginAttempts: number;
+  declare lastLoginAt?: Date;
+  declare lastLoginIp?: string;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
 }
@@ -78,6 +98,46 @@ User.init(
     allowAnonymous: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
+    },
+    emailVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    emailVerifiedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    phoneNumber: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    phoneVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    accountLocked: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    lockReason: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    lockedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    failedLoginAttempts: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    lastLoginAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    lastLoginIp: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {
