@@ -32,3 +32,21 @@ build/
 
 # Misc
 .DS_Store
+
+# Docker
+docker-compose.override.yml
+
+# Backups
+backups/
+
+# Logs
+logs/
+*.log
+
+# SSL Certificates
+nginx/ssl/*.pem
+nginx/ssl/*.key
+
+# Database dumps
+*.sql
+*.dump

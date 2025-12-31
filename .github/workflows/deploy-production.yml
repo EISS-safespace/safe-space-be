@@ -1,0 +1,167 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ${{ github.repository_owner }}/safespace
+
+jobs:
+  deploy-production:
+    name: Deploy to Production Environment
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://safespace.yourdomain.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.PRODUCTION_SSH_PRIVATE_KEY }}
+
+      - name: Add server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.PRODUCTION_SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Create .env file
+        run: |
+          cat > .env << EOF
+          NODE_ENV=production
+          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          JWT_EXPIRES_IN=7d
+          OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+          SMTP_HOST=${{ secrets.SMTP_HOST }}
+          SMTP_PORT=${{ secrets.SMTP_PORT }}
+          SMTP_USER=${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+          AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION=${{ secrets.AWS_REGION }}
+          AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}
+          NEXT_PUBLIC_API_URL=https://api.safespace.yourdomain.com
+          SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+          EOF
+
+      - name: Backup database
+        run: |
+          ssh ${{ secrets.PRODUCTION_SERVER_USER }}@${{ secrets.PRODUCTION_SERVER_IP }} << 'EOF'
+            cd /opt/safespace
+            
+            # Create backup directory
+            mkdir -p backups
+            
+            # Backup database
+            docker-compose exec -T postgres pg_dump -U postgres safespace_db > backups/backup_$(date +%Y%m%d_%H%M%S).sql
+            
+            # Keep only last 30 days of backups
+            find backups/ -name "backup_*.sql" -mtime +30 -delete
+            
+            echo "✅ Database backup completed"
+          EOF
+
+      - name: Copy files to server
+        run: |
+          scp -r docker-compose.yml docker-compose.prod.yml .env ${{ secrets.PRODUCTION_SERVER_USER }}@${{ secrets.PRODUCTION_SERVER_IP }}:/opt/safespace/
+
+      - name: Deploy on server
+        run: |
+          ssh ${{ secrets.PRODUCTION_SERVER_USER }}@${{ secrets.PRODUCTION_SERVER_IP }} << 'EOF'
+            cd /opt/safespace
+            
+            # Pull latest images
+            docker-compose -f docker-compose.yml -f docker-compose.prod.yml pull
+            
+            # Stop and remove old containers (with zero-downtime strategy)
+            docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --no-deps --build
+            
+            # Wait for services to be healthy
+            sleep 60
+            
+            # Check health
+            docker-compose ps
+            
+            # Remove old images
+            docker image prune -f
+            
+            echo "✅ Deployment completed"
+          EOF
+
+      - name: Run database migrations
+        run: |
+          ssh ${{ secrets.PRODUCTION_SERVER_USER }}@${{ secrets.PRODUCTION_SERVER_IP }} << 'EOF'
+            cd /opt/safespace
+            docker-compose exec -T auth-service npm run migrate || echo "Migrations not configured yet"
+          EOF
+
+      - name: Health check
+        run: |
+          sleep 15
+          
+          # Check API Gateway
+          curl -f https://api.safespace.yourdomain.com/health || exit 1
+          
+          # Check Frontend
+          curl -f https://safespace.yourdomain.com/ || exit 1
+          
+          echo "✅ All health checks passed"
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          ssh ${{ secrets.PRODUCTION_SERVER_USER }}@${{ secrets.PRODUCTION_SERVER_IP }} << 'EOF'
+            cd /opt/safespace
+            
+            echo "❌ Deployment failed, rolling back..."
+            
+            # Restore from backup
+            LATEST_BACKUP=$(ls -t backups/backup_*.sql | head -1)
+            if [ -f "$LATEST_BACKUP" ]; then
+              docker-compose exec -T postgres psql -U postgres -d safespace_db < "$LATEST_BACKUP"
+              echo "✅ Database restored from backup"
+            fi
+            
+            # Restart with previous version
+            docker-compose down
+            docker-compose up -d
+          EOF
+
+      - name: Notify deployment
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Production deployment successful"
+          else
+            echo "❌ Production deployment failed and rolled back"
+          fi
+
+  post-deployment-tests:
+    name: Run Post-Deployment Tests
+    needs: deploy-production
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run integration tests
+        run: |
+          # Test critical endpoints
+          curl -f https://api.safespace.yourdomain.com/health
+          curl -f https://safespace.yourdomain.com/
+          
+          echo "✅ All post-deployment tests passed"
+

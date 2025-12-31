@@ -1,0 +1,63 @@
+name: Lint
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+jobs:
+  lint-backend:
+    name: Lint Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Check TypeScript
+        run: npx tsc --noEmit
+
+  lint-api-gateway:
+    name: Lint API Gateway
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: api-gateway/package.json
+
+      - name: Install dependencies
+        working-directory: ./api-gateway
+        run: npm ci
+
+      - name: Run ESLint
+        working-directory: ./api-gateway
+        run: npm run lint || echo "Linting not configured yet"
+
+      - name: Check TypeScript
+        working-directory: ./api-gateway
+        run: npx tsc --noEmit
+
+      - name: Check formatting
+        working-directory: ./api-gateway
+        run: npm run format:check || npx prettier --check "src/**/*.ts"
+

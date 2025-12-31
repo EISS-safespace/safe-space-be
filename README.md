@@ -14,9 +14,40 @@
 
 ---
 
+## 🚀 Quick Start (Docker)
+
+```bash
+# 1. Clone the repository
+git clone <your-repo-url>
+cd safe-space-be
+
+# 2. Copy environment variables
+cp .env.example .env
+
+# 3. Start all services with Docker Compose
+docker-compose up -d
+
+# 4. Check service health
+docker-compose ps
+
+# 5. View logs
+docker-compose logs -f api-gateway
+
+# 6. Stop all services
+docker-compose down
+```
+
+**Services will be available at:**
+- API Gateway: http://localhost:3001
+- PostgreSQL: localhost:5432
+- Redis: localhost:6379
+- Individual microservices: Ports 3002-3011
+
+---
+
 ## Introduction
 
-SafeSpace Backend API is a RESTful API built with Node.js, Express.js, and PostgreSQL. It provides the backend infrastructure for the SafeSpace mental wellness social platform, supporting features like dual identity posting, mood tracking, peer support, and real-time chat.
+SafeSpace Backend API is a **microservices-based** RESTful API built with Node.js, Express.js, and PostgreSQL. It provides the backend infrastructure for the SafeSpace mental wellness social platform, supporting features like dual identity posting, mood tracking, peer support, and real-time chat.
 
 ## Tech Stack
 
