@@ -1,6 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { MoodEntry } from '../models/index.js';
-import { AppError } from '../middleware/errorHandler.js';
 import { AuthRequest } from '../middleware/auth.js';
 import { Op } from 'sequelize';
 
@@ -31,6 +30,7 @@ export const getMoodEntries = async (req: AuthRequest, res: Response, next: Next
     const userId = req.userId!;
     const { startDate, endDate } = req.query;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = { userId };
 
     if (startDate && endDate) {

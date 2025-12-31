@@ -86,6 +86,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
 
 export const getProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const userId = (req as any).userId;
 
     const user = await User.findByPk(userId, {

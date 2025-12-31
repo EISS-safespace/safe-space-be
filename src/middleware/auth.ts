@@ -20,7 +20,7 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
 
     req.userId = decoded.userId;
     next();
-  } catch (error) {
+  } catch (_error) {
     res.status(401).json({ error: 'Invalid token' });
   }
 };
@@ -36,7 +36,7 @@ export const optionalAuth = (req: AuthRequest, res: Response, next: NextFunction
     }
 
     next();
-  } catch (error) {
+  } catch (_error) {
     // Continue without authentication
     next();
   }
