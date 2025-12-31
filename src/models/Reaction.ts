@@ -16,7 +16,6 @@ interface ReactionAttributes {
   updatedAt?: Date;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface ReactionCreationAttributes extends Optional<ReactionAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 
 class Reaction extends Model<ReactionAttributes, ReactionCreationAttributes> implements ReactionAttributes {

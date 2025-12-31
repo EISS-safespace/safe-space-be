@@ -9,7 +9,7 @@ import tseslint from 'typescript-eslint';
 // You should change it to your needs following the documentation.
 export default tseslint.config(
   {
-    ignores: ['**/build/**', '**/tmp/**', '**/coverage/**'],
+    ignores: ['**/build/**', '**/tmp/**', '**/coverage/**', '**/api-gateway/**', '**/nginx/**'],
   },
   eslint.configs.recommended,
   eslintConfigPrettier,
@@ -28,6 +28,7 @@ export default tseslint.config(
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_',
       }],
+      '@typescript-eslint/no-empty-object-type': 'off',
     },
 
     languageOptions: {

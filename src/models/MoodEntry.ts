@@ -22,7 +22,6 @@ interface MoodEntryAttributes {
   updatedAt?: Date;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface MoodEntryCreationAttributes extends Optional<MoodEntryAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 
 class MoodEntry extends Model<MoodEntryAttributes, MoodEntryCreationAttributes> implements MoodEntryAttributes {
