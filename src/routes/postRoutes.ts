@@ -4,6 +4,7 @@ import {
   createPost,
   getPosts,
   getPostById,
+  updatePost,
   deletePost,
 } from '../controllers/postController.js';
 import { authenticate, optionalAuth } from '../middleware/auth.js';
@@ -26,6 +27,13 @@ router.post(
 router.get('/', optionalAuth, getPosts);
 
 router.get('/:id', optionalAuth, getPostById);
+
+router.put(
+  '/:id',
+  authenticate,
+  validate([body('content').optional().notEmpty()]),
+  updatePost,
+);
 
 router.delete('/:id', authenticate, deletePost);
 

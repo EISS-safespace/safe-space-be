@@ -28,6 +28,12 @@ interface PostAttributes {
   mood?: string;
   imageUrls?: string[];
   audioUrl?: string;
+  isDraft: boolean;
+  scheduledFor?: Date;
+  isEdited: boolean;
+  editedAt?: Date;
+  deletedAt?: Date; // Soft delete
+  viewCount: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -48,6 +54,12 @@ class Post
   declare mood?: string;
   declare imageUrls?: string[];
   declare audioUrl?: string;
+  declare isDraft: boolean;
+  declare scheduledFor?: Date;
+  declare isEdited: boolean;
+  declare editedAt?: Date;
+  declare deletedAt?: Date;
+  declare viewCount: number;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
 }
@@ -66,6 +78,7 @@ Post.init(
         model: 'users',
         key: 'id',
       },
+      onDelete: 'CASCADE',
     },
     content: {
       type: DataTypes.TEXT,
@@ -95,11 +108,53 @@ Post.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    isDraft: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    scheduledFor: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    isEdited: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    editedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    viewCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
   },
   {
     sequelize,
     tableName: 'posts',
     timestamps: true,
+    paranoid: false, // We handle soft delete manually with deletedAt
+    indexes: [
+      {
+        fields: ['userId'],
+      },
+      {
+        fields: ['postType'],
+      },
+      {
+        fields: ['createdAt'],
+      },
+      {
+        fields: ['isDraft'],
+      },
+      {
+        fields: ['scheduledFor'],
+      },
+    ],
   },
 );
 

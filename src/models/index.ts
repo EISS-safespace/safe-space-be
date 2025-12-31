@@ -11,6 +11,9 @@ import AnonymousIdentity from './AnonymousIdentity.js';
 import TrustScore from './TrustScore.js';
 import VerificationToken from './VerificationToken.js';
 import LoginAttempt from './LoginAttempt.js';
+import HopeStory from './HopeStory.js';
+import Quote from './Quote.js';
+import PostRevision from './PostRevision.js';
 
 // Define associations
 User.hasMany(Post, { foreignKey: 'userId', as: 'posts' });
@@ -22,11 +25,15 @@ Comment.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 Post.hasMany(Comment, { foreignKey: 'postId', as: 'comments' });
 Comment.belongsTo(Post, { foreignKey: 'postId', as: 'post' });
 
+// Comment self-referencing for nested replies
+Comment.hasMany(Comment, { foreignKey: 'parentId', as: 'replies' });
+Comment.belongsTo(Comment, { foreignKey: 'parentId', as: 'parent' });
+
 User.hasMany(Reaction, { foreignKey: 'userId', as: 'reactions' });
 Reaction.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
-Post.hasMany(Reaction, { foreignKey: 'postId', as: 'reactions' });
-Reaction.belongsTo(Post, { foreignKey: 'postId', as: 'post' });
+// Note: Reactions are now polymorphic (can be on posts or comments)
+// We handle this manually in queries using reactableType and reactableId
 
 User.hasMany(MoodEntry, { foreignKey: 'userId', as: 'moodEntries' });
 MoodEntry.belongsTo(User, { foreignKey: 'userId', as: 'user' });
@@ -62,6 +69,17 @@ Post.hasOne(AnonymousIdentity, {
 });
 AnonymousIdentity.belongsTo(Post, { foreignKey: 'postId', as: 'post' });
 
+// Hope Story associations
+User.hasMany(HopeStory, { foreignKey: 'userId', as: 'hopeStories' });
+HopeStory.belongsTo(User, { foreignKey: 'userId', as: 'author' });
+
+// Post Revision associations
+Post.hasMany(PostRevision, { foreignKey: 'postId', as: 'revisions' });
+PostRevision.belongsTo(Post, { foreignKey: 'postId', as: 'post' });
+
+User.hasMany(PostRevision, { foreignKey: 'editedBy', as: 'postEdits' });
+PostRevision.belongsTo(User, { foreignKey: 'editedBy', as: 'editor' });
+
 export {
   User,
   Post,
@@ -76,4 +94,7 @@ export {
   TrustScore,
   VerificationToken,
   LoginAttempt,
+  HopeStory,
+  Quote,
+  PostRevision,
 };
