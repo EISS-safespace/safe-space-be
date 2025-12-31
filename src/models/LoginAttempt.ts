@@ -76,4 +76,3 @@ LoginAttempt.init(
 );
 
 export default LoginAttempt;
-

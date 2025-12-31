@@ -44,13 +44,22 @@ UserSettings.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 User.hasOne(TrustScore, { foreignKey: 'userId', as: 'trustScore' });
 TrustScore.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
-User.hasMany(VerificationToken, { foreignKey: 'userId', as: 'verificationTokens' });
+User.hasMany(VerificationToken, {
+  foreignKey: 'userId',
+  as: 'verificationTokens',
+});
 VerificationToken.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
-User.hasMany(AnonymousIdentity, { foreignKey: 'userId', as: 'anonymousIdentities' });
+User.hasMany(AnonymousIdentity, {
+  foreignKey: 'userId',
+  as: 'anonymousIdentities',
+});
 AnonymousIdentity.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
-Post.hasOne(AnonymousIdentity, { foreignKey: 'postId', as: 'anonymousIdentity' });
+Post.hasOne(AnonymousIdentity, {
+  foreignKey: 'postId',
+  as: 'anonymousIdentity',
+});
 AnonymousIdentity.belongsTo(Post, { foreignKey: 'postId', as: 'post' });
 
 export {

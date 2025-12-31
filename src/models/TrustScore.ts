@@ -107,4 +107,3 @@ TrustScore.init(
 );
 
 export default TrustScore;
-

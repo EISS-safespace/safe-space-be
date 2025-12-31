@@ -122,4 +122,3 @@ UserProfile.init(
 );
 
 export default UserProfile;
-

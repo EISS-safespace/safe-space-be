@@ -91,4 +91,3 @@ VerificationToken.init(
 );
 
 export default VerificationToken;
-

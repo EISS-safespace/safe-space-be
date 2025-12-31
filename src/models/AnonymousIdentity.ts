@@ -90,4 +90,3 @@ AnonymousIdentity.init(
 );
 
 export default AnonymousIdentity;
-

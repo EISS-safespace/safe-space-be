@@ -148,4 +148,3 @@ UserSettings.init(
 );
 
 export default UserSettings;
-

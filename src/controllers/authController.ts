@@ -306,7 +306,9 @@ export const logout = async (
 ): Promise<void> => {
   try {
     const refreshToken =
-      req.cookies.refreshToken || req.body.refreshToken || req.headers['x-refresh-token'];
+      req.cookies.refreshToken ||
+      req.body.refreshToken ||
+      req.headers['x-refresh-token'];
 
     if (refreshToken) {
       // Delete session from database
@@ -329,7 +331,9 @@ export const refreshAccessToken = async (
 ): Promise<void> => {
   try {
     const refreshToken =
-      req.cookies.refreshToken || req.body.refreshToken || req.headers['x-refresh-token'];
+      req.cookies.refreshToken ||
+      req.body.refreshToken ||
+      req.headers['x-refresh-token'];
 
     if (!refreshToken) {
       throw new AppError('Refresh token not provided', 401);
@@ -433,7 +437,9 @@ export const resendVerificationEmail = async (
     const user = await User.findOne({ where: { email } });
     if (!user) {
       // Don't reveal if user exists
-      res.json({ message: 'If the email exists, a verification link has been sent.' });
+      res.json({
+        message: 'If the email exists, a verification link has been sent.',
+      });
       return;
     }
 

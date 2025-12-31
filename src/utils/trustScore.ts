@@ -142,4 +142,3 @@ export const incrementReports = async (userId: string): Promise<void> => {
     await updateUserTrustScore(userId);
   }
 };
-
