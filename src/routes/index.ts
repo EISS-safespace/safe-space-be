@@ -15,4 +15,3 @@ router.get('/health', (_req, res) => {
 });
 
 export default router;
-

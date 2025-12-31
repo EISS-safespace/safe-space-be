@@ -4,10 +4,22 @@ import { AppError } from '../middleware/errorHandler.js';
 import { AuthRequest } from '../middleware/auth.js';
 import { getAnonymousDisplayName } from '../utils/anonymousAvatar.js';
 
-export const createPost = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+export const createPost = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const userId = req.userId!;
-    const { content, isAnonymous, postType, triggerWarnings, mood, imageUrls, audioUrl } = req.body;
+    const {
+      content,
+      isAnonymous,
+      postType,
+      triggerWarnings,
+      mood,
+      imageUrls,
+      audioUrl,
+    } = req.body;
 
     const post = await Post.create({
       userId,
@@ -29,7 +41,11 @@ export const createPost = async (req: AuthRequest, res: Response, next: NextFunc
   }
 };
 
-export const getPosts = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+export const getPosts = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const { mood, postType, page = 1, limit = 20 } = req.query;
     const offset = (Number(page) - 1) * Number(limit);
@@ -45,7 +61,13 @@ export const getPosts = async (req: AuthRequest, res: Response, next: NextFuncti
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'username', 'displayName', 'avatarUrl', 'isVerifiedTherapist'],
+          attributes: [
+            'id',
+            'username',
+            'displayName',
+            'avatarUrl',
+            'isVerifiedTherapist',
+          ],
         },
         {
           model: Reaction,
@@ -81,7 +103,11 @@ export const getPosts = async (req: AuthRequest, res: Response, next: NextFuncti
   }
 };
 
-export const getPostById = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+export const getPostById = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const { id } = req.params;
 
@@ -90,7 +116,13 @@ export const getPostById = async (req: AuthRequest, res: Response, next: NextFun
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'username', 'displayName', 'avatarUrl', 'isVerifiedTherapist'],
+          attributes: [
+            'id',
+            'username',
+            'displayName',
+            'avatarUrl',
+            'isVerifiedTherapist',
+          ],
         },
         {
           model: Comment,
@@ -129,7 +161,11 @@ export const getPostById = async (req: AuthRequest, res: Response, next: NextFun
   }
 };
 
-export const deletePost = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+export const deletePost = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const userId = req.userId!;
     const { id } = req.params;
@@ -151,4 +187,3 @@ export const deletePost = async (req: AuthRequest, res: Response, next: NextFunc
     next(error);
   }
 };
-

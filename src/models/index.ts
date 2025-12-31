@@ -25,4 +25,3 @@ User.hasMany(MoodEntry, { foreignKey: 'userId', as: 'moodEntries' });
 MoodEntry.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
 export { User, Post, Comment, Reaction, MoodEntry, ChatRoom };
-

@@ -10,4 +10,3 @@ export const generateToken = (userId: string): string => {
 export const verifyToken = (token: string): { userId: string } => {
   return jwt.verify(token, config.jwtSecret) as { userId: string };
 };
-

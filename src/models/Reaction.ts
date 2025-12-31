@@ -16,9 +16,13 @@ interface ReactionAttributes {
   updatedAt?: Date;
 }
 
-interface ReactionCreationAttributes extends Optional<ReactionAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+interface ReactionCreationAttributes
+  extends Optional<ReactionAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 
-class Reaction extends Model<ReactionAttributes, ReactionCreationAttributes> implements ReactionAttributes {
+class Reaction
+  extends Model<ReactionAttributes, ReactionCreationAttributes>
+  implements ReactionAttributes
+{
   declare id: string;
   declare postId: string;
   declare userId: string;
@@ -65,8 +69,7 @@ Reaction.init(
         fields: ['postId', 'userId', 'reactionType'],
       },
     ],
-  }
+  },
 );
 
 export default Reaction;
-

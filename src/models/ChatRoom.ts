@@ -19,9 +19,13 @@ interface ChatRoomAttributes {
   updatedAt?: Date;
 }
 
-interface ChatRoomCreationAttributes extends Optional<ChatRoomAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+interface ChatRoomCreationAttributes
+  extends Optional<ChatRoomAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 
-class ChatRoom extends Model<ChatRoomAttributes, ChatRoomCreationAttributes> implements ChatRoomAttributes {
+class ChatRoom
+  extends Model<ChatRoomAttributes, ChatRoomCreationAttributes>
+  implements ChatRoomAttributes
+{
   declare id: string;
   declare name?: string;
   declare roomType: RoomType;
@@ -69,8 +73,7 @@ ChatRoom.init(
     sequelize,
     tableName: 'chat_rooms',
     timestamps: true,
-  }
+  },
 );
 
 export default ChatRoom;
-

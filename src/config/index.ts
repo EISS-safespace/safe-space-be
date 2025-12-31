@@ -7,7 +7,8 @@ dotenv.config();
 export const config = {
   port: parseInt(process.env.PORT || '3001'),
   nodeEnv: process.env.NODE_ENV || 'development',
-  jwtSecret: (process.env.JWT_SECRET || 'your-secret-key-change-in-production') as Secret,
+  jwtSecret: (process.env.JWT_SECRET ||
+    'your-secret-key-change-in-production') as Secret,
   jwtExpiresIn: (process.env.JWT_EXPIRES_IN || '7d') as StringValue,
   bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || '10'),
   corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:3000',
@@ -27,4 +28,3 @@ export const config = {
     allowedAudioTypes: ['audio/mpeg', 'audio/wav', 'audio/webm'],
   },
 };
-

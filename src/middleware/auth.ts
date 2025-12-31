@@ -6,7 +6,11 @@ export interface AuthRequest extends Request {
   userId?: string;
 }
 
-export const authenticate = (req: AuthRequest, res: Response, next: NextFunction): void => {
+export const authenticate = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): void => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -25,7 +29,11 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
   }
 };
 
-export const optionalAuth = (req: AuthRequest, _res: Response, next: NextFunction): void => {
+export const optionalAuth = (
+  req: AuthRequest,
+  _res: Response,
+  next: NextFunction,
+): void => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -41,4 +49,3 @@ export const optionalAuth = (req: AuthRequest, _res: Response, next: NextFunctio
     next();
   }
 };
-

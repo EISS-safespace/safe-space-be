@@ -4,7 +4,11 @@ import { hashPassword, comparePassword } from '../utils/password.js';
 import { generateToken } from '../utils/jwt.js';
 import { AppError } from '../middleware/errorHandler.js';
 
-export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const register = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const { email, username, password, displayName } = req.body;
 
@@ -48,7 +52,11 @@ export const register = async (req: Request, res: Response, next: NextFunction):
   }
 };
 
-export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const { email, password } = req.body;
 
@@ -84,7 +92,11 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
   }
 };
 
-export const getProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const userId = (req as any).userId;
@@ -102,4 +114,3 @@ export const getProfile = async (req: Request, res: Response, next: NextFunction
     next(error);
   }
 };
-

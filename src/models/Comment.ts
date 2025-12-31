@@ -11,9 +11,13 @@ interface CommentAttributes {
   updatedAt?: Date;
 }
 
-interface CommentCreationAttributes extends Optional<CommentAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+interface CommentCreationAttributes
+  extends Optional<CommentAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 
-class Comment extends Model<CommentAttributes, CommentCreationAttributes> implements CommentAttributes {
+class Comment
+  extends Model<CommentAttributes, CommentCreationAttributes>
+  implements CommentAttributes
+{
   declare id: string;
   declare postId: string;
   declare userId: string;
@@ -59,8 +63,7 @@ Comment.init(
     sequelize,
     tableName: 'comments',
     timestamps: true,
-  }
+  },
 );
 
 export default Comment;
-
