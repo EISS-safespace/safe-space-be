@@ -23,28 +23,29 @@ jobs:
         service:
           - name: api-gateway
             context: ./api-gateway
-          - name: auth-service
-            context: ./services/auth-service
-          - name: user-service
-            context: ./services/user-service
-          - name: content-service
-            context: ./services/content-service
-          - name: mood-service
-            context: ./services/mood-service
-          - name: chat-service
-            context: ./services/chat-service
-          - name: moderation-service
-            context: ./services/moderation-service
-          - name: wellness-service
-            context: ./services/wellness-service
-          - name: professional-service
-            context: ./services/professional-service
-          - name: media-service
-            context: ./services/media-service
-          - name: notification-service
-            context: ./services/notification-service
           - name: nginx
             context: ./nginx
+          # TODO: Add other services when they have Dockerfiles
+          # - name: auth-service
+          #   context: ./services/auth-service
+          # - name: user-service
+          #   context: ./services/user-service
+          # - name: content-service
+          #   context: ./services/content-service
+          # - name: mood-service
+          #   context: ./services/mood-service
+          # - name: chat-service
+          #   context: ./services/chat-service
+          # - name: moderation-service
+          #   context: ./services/moderation-service
+          # - name: wellness-service
+          #   context: ./services/wellness-service
+          # - name: professional-service
+          #   context: ./services/professional-service
+          # - name: media-service
+          #   context: ./services/media-service
+          # - name: notification-service
+          #   context: ./services/notification-service
 
     steps:
       - name: Checkout code
