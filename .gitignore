@@ -50,3 +50,6 @@ nginx/ssl/*.key
 # Database dumps
 *.sql
 *.dump
+
+# Exception: Keep infrastructure SQL files
+!infrastructure/**/*.sql
