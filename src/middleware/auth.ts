@@ -25,7 +25,7 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
   }
 };
 
-export const optionalAuth = (req: AuthRequest, res: Response, next: NextFunction): void => {
+export const optionalAuth = (req: AuthRequest, _res: Response, next: NextFunction): void => {
   try {
     const authHeader = req.headers.authorization;
 
