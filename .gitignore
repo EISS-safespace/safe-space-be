@@ -35,6 +35,18 @@ dist/
 # Misc
 .DS_Store
 
+# Uploads
+uploads/
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.mp3
+*.wav
+*.ogg
+*.webm
+
 # Docker
 docker-compose.override.yml
 
