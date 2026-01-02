@@ -14,6 +14,7 @@ import LoginAttempt from './LoginAttempt.js';
 import HopeStory from './HopeStory.js';
 import Quote from './Quote.js';
 import PostRevision from './PostRevision.js';
+import PostMedia from './PostMedia.js';
 
 // Define associations
 User.hasMany(Post, { foreignKey: 'userId', as: 'posts' });
@@ -80,6 +81,10 @@ PostRevision.belongsTo(Post, { foreignKey: 'postId', as: 'post' });
 User.hasMany(PostRevision, { foreignKey: 'editedBy', as: 'postEdits' });
 PostRevision.belongsTo(User, { foreignKey: 'editedBy', as: 'editor' });
 
+// Post Media associations
+Post.hasMany(PostMedia, { foreignKey: 'postId', as: 'media' });
+PostMedia.belongsTo(Post, { foreignKey: 'postId', as: 'post' });
+
 export {
   User,
   Post,
@@ -97,4 +102,5 @@ export {
   HopeStory,
   Quote,
   PostRevision,
+  PostMedia,
 };

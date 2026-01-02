@@ -5,6 +5,7 @@ import moodRoutes from './moodRoutes.js';
 import commentRoutes from './commentRoutes.js';
 import reactionRoutes from './reactionRoutes.js';
 import hopeWallRoutes from './hopeWallRoutes.js';
+import mediaRoutes from './mediaRoutes.js';
 
 const router = Router();
 
@@ -14,6 +15,7 @@ router.use('/mood', moodRoutes);
 router.use('/comments', commentRoutes);
 router.use('/reactions', reactionRoutes);
 router.use('/hope-wall', hopeWallRoutes);
+router.use('/media', mediaRoutes);
 
 // Health check endpoint
 router.get('/health', (_req, res) => {

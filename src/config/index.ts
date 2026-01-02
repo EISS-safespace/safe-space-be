@@ -27,8 +27,22 @@ export const config = {
   },
   upload: {
     maxFileSize: parseInt(process.env.MAX_FILE_SIZE || '5242880'), // 5MB default
+    maxImageSize: parseInt(process.env.MAX_IMAGE_SIZE || '5242880'), // 5MB
+    maxAudioSize: parseInt(process.env.MAX_AUDIO_SIZE || '10485760'), // 10MB
     allowedImageTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-    allowedAudioTypes: ['audio/mpeg', 'audio/wav', 'audio/webm'],
+    allowedAudioTypes: ['audio/mpeg', 'audio/wav', 'audio/webm', 'audio/ogg'],
+    uploadDir: process.env.UPLOAD_DIR || 'uploads',
+    imageQuality: parseInt(process.env.IMAGE_QUALITY || '80'),
+    thumbnailWidth: parseInt(process.env.THUMBNAIL_WIDTH || '300'),
+    thumbnailHeight: parseInt(process.env.THUMBNAIL_HEIGHT || '300'),
+    maxImagesPerPost: parseInt(process.env.MAX_IMAGES_PER_POST || '5'),
+  },
+  aws: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+    region: process.env.AWS_REGION || 'us-east-1',
+    s3Bucket: process.env.AWS_S3_BUCKET || 'safespace-media',
+    cloudFrontUrl: process.env.AWS_CLOUDFRONT_URL || '',
   },
   auth: {
     maxLoginAttempts: parseInt(process.env.MAX_LOGIN_ATTEMPTS || '5'),
