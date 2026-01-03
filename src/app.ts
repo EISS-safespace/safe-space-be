@@ -11,7 +11,11 @@ import sequelize from './config/database.js';
 const app: Application = express();
 
 // Middleware
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  }),
+);
 app.use(
   cors({
     origin: config.corsOrigin,
@@ -41,7 +45,7 @@ export const connectDatabase = async (): Promise<void> => {
     console.log('✅ Database connection established successfully.');
 
     if (config.nodeEnv === 'development') {
-      await sequelize.sync({ alter: true });
+      await sequelize.sync({ alter: false });
       console.log('✅ Database synchronized.');
     }
   } catch (error) {

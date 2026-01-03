@@ -16,17 +16,20 @@ export const createStory = async (
     const userId = req.userId!;
     const { title, content, category, isAnonymous } = req.body;
 
+    // Auto-approve all stories (admin moderation panel is future scope)
     const story = await HopeStory.create({
       userId,
       title,
       content,
       category,
       isAnonymous: isAnonymous || false,
-      status: StoryStatus.PENDING, // All stories start as pending
+      status: StoryStatus.APPROVED,
+      approvedAt: new Date(),
+      approvedBy: userId,
     });
 
     res.status(201).json({
-      message: 'Story submitted for review',
+      message: 'Story published successfully!',
       story,
     });
   } catch (error) {
@@ -239,6 +242,115 @@ export const getCategories = async (
     res.json({
       storyCategories: Object.values(StoryCategory),
       quoteCategories: Object.values(QuoteCategory),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Admin endpoints for story moderation
+export const approveStory = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const userId = req.userId!;
+    const { id } = req.params;
+
+    const story = await HopeStory.findByPk(id);
+
+    if (!story) {
+      throw new AppError('Story not found', 404);
+    }
+
+    if (story.status !== StoryStatus.PENDING) {
+      throw new AppError('Story is not pending approval', 400);
+    }
+
+    await story.update({
+      status: StoryStatus.APPROVED,
+      approvedAt: new Date(),
+      approvedBy: userId,
+      rejectionReason: null,
+    });
+
+    res.json({
+      message: 'Story approved successfully',
+      story,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const rejectStory = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const userId = req.userId!;
+    const { id } = req.params;
+    const { reason } = req.body;
+
+    if (!reason) {
+      throw new AppError('Rejection reason is required', 400);
+    }
+
+    const story = await HopeStory.findByPk(id);
+
+    if (!story) {
+      throw new AppError('Story not found', 404);
+    }
+
+    if (story.status !== StoryStatus.PENDING) {
+      throw new AppError('Story is not pending approval', 400);
+    }
+
+    await story.update({
+      status: StoryStatus.REJECTED,
+      approvedBy: userId,
+      rejectionReason: reason,
+    });
+
+    res.json({
+      message: 'Story rejected',
+      story,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const featureStory = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { featured } = req.body;
+
+    const story = await HopeStory.findByPk(id);
+
+    if (!story) {
+      throw new AppError('Story not found', 404);
+    }
+
+    if (story.status !== StoryStatus.APPROVED) {
+      throw new AppError('Only approved stories can be featured', 400);
+    }
+
+    await story.update({
+      featuredAt: featured ? new Date() : null,
+    });
+
+    res.json({
+      message: featured
+        ? 'Story featured successfully'
+        : 'Story unfeatured successfully',
+      story,
     });
   } catch (error) {
     next(error);

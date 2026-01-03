@@ -3,9 +3,10 @@ import { Op } from 'sequelize';
 import {
   Post,
   User,
+  PostRevision,
   Comment,
   Reaction,
-  PostRevision,
+  PostMedia,
 } from '../models/index.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { AuthRequest } from '../middleware/auth.js';
@@ -43,9 +44,41 @@ export const createPost = async (
       scheduledFor: scheduledFor || null,
     });
 
+    // Fetch the post with user data
+    const createdPost = await Post.findByPk(post.id, {
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: [
+            'id',
+            'username',
+            'displayName',
+            'avatarUrl',
+            'isVerifiedTherapist',
+          ],
+        },
+      ],
+    });
+
+    // Transform for anonymous posts
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const postData = createdPost!.toJSON() as any;
+    if (postData.isAnonymous) {
+      postData.user = {
+        displayName: getAnonymousDisplayName(post.id),
+        isAnonymous: true,
+      };
+    }
+
+    // New posts have 0 comments and reactions
+    postData.commentCount = 0;
+    postData.reactionCount = 0;
+    postData.hasUserReacted = false;
+
     res.status(201).json({
       message: 'Post created successfully',
-      post,
+      post: postData,
     });
   } catch (error) {
     next(error);
@@ -87,24 +120,61 @@ export const getPosts = async (
             'isVerifiedTherapist',
           ],
         },
+        {
+          model: PostMedia,
+          as: 'media',
+          where: { deletedAt: null },
+          required: false,
+        },
       ],
       order: [['createdAt', 'DESC']],
       limit: Number(limit),
       offset,
     });
 
-    // Transform posts to hide user info for anonymous posts
-    const transformedPosts = posts.rows.map((post) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const postData = post.toJSON() as any;
-      if (postData.isAnonymous) {
-        postData.user = {
-          displayName: getAnonymousDisplayName(post.id),
-          isAnonymous: true,
-        };
-      }
-      return postData;
-    });
+    // Transform posts to hide user info for anonymous posts and add counts
+    const transformedPosts = await Promise.all(
+      posts.rows.map(async (post) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const postData = post.toJSON() as any;
+        if (postData.isAnonymous) {
+          postData.user = {
+            displayName: getAnonymousDisplayName(post.id),
+            isAnonymous: true,
+          };
+        }
+
+        // Get comment count
+        const commentCount = await Comment.count({
+          where: { postId: post.id, deletedAt: null },
+        });
+
+        // Get reaction count
+        const reactionCount = await Reaction.count({
+          where: { reactableType: 'post', reactableId: post.id },
+        });
+
+        postData.commentCount = commentCount;
+        postData.reactionCount = reactionCount;
+
+        // Check if current user has reacted (if authenticated)
+        if (req.userId) {
+          const userReaction = await Reaction.findOne({
+            where: {
+              userId: req.userId,
+              reactableType: 'post',
+              reactableId: post.id,
+              reactionType: 'heart',
+            },
+          });
+          postData.hasUserReacted = !!userReaction;
+        } else {
+          postData.hasUserReacted = false;
+        }
+
+        return postData;
+      }),
+    );
 
     res.json({
       posts: transformedPosts,
@@ -139,19 +209,10 @@ export const getPostById = async (
           ],
         },
         {
-          model: Comment,
-          as: 'comments',
-          include: [
-            {
-              model: User,
-              as: 'user',
-              attributes: ['id', 'username', 'displayName', 'avatarUrl'],
-            },
-          ],
-        },
-        {
-          model: Reaction,
-          as: 'reactions',
+          model: PostMedia,
+          as: 'media',
+          where: { deletedAt: null },
+          required: false,
         },
       ],
     });
@@ -167,6 +228,34 @@ export const getPostById = async (
         displayName: getAnonymousDisplayName(post.id),
         isAnonymous: true,
       };
+    }
+
+    // Get comment count
+    const commentCount = await Comment.count({
+      where: { postId: post.id, deletedAt: null },
+    });
+
+    // Get reaction count
+    const reactionCount = await Reaction.count({
+      where: { reactableType: 'post', reactableId: post.id },
+    });
+
+    postData.commentCount = commentCount;
+    postData.reactionCount = reactionCount;
+
+    // Check if current user has reacted (if authenticated)
+    if (req.userId) {
+      const userReaction = await Reaction.findOne({
+        where: {
+          userId: req.userId,
+          reactableType: 'post',
+          reactableId: post.id,
+          reactionType: 'heart',
+        },
+      });
+      postData.hasUserReacted = !!userReaction;
+    } else {
+      postData.hasUserReacted = false;
     }
 
     res.json({ post: postData });
