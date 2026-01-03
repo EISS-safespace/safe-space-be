@@ -47,7 +47,7 @@ CREATE TYPE mood.mood_type AS ENUM ('anxious', 'depressed', 'stressed', 'calm', 
 CREATE TYPE content.reaction_type AS ENUM ('me_too', 'support', 'helpful', 'inspiring');
 
 -- Trigger warning types
-CREATE TYPE content.trigger_warning AS ENUM ('self_harm', 'suicide', 'eating_disorder', 'substance_abuse', 'violence', 'trauma');
+CREATE TYPE content.trigger_warning AS ENUM ('anxiety', 'depression', 'eating_disorder', 'substance_abuse', 'violence', 'trauma');
 
 -- User roles
 CREATE TYPE auth.user_role AS ENUM ('user', 'therapist', 'moderator', 'admin');
