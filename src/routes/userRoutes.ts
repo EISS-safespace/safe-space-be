@@ -47,12 +47,7 @@ router.put(
 );
 
 // Upload avatar
-router.post(
-  '/profile/avatar',
-  authenticate,
-  uploadSingleImage,
-  uploadAvatar,
-);
+router.post('/profile/avatar', authenticate, uploadSingleImage, uploadAvatar);
 
 // Upload cover photo
 router.post(
@@ -63,4 +58,3 @@ router.post(
 );
 
 export default router;
-

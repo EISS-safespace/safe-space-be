@@ -1,6 +1,13 @@
 import { Response, NextFunction } from 'express';
 import { Op } from 'sequelize';
-import { Post, User, PostRevision, Comment, Reaction, PostMedia } from '../models/index.js';
+import {
+  Post,
+  User,
+  PostRevision,
+  Comment,
+  Reaction,
+  PostMedia,
+} from '../models/index.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { AuthRequest } from '../middleware/auth.js';
 import { getAnonymousDisplayName } from '../utils/anonymousAvatar.js';

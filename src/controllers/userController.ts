@@ -1,5 +1,13 @@
 import { Response, NextFunction } from 'express';
-import { User, UserProfile, Post, TrustScore, PostMedia, Comment, Reaction } from '../models/index.js';
+import {
+  User,
+  UserProfile,
+  Post,
+  TrustScore,
+  PostMedia,
+  Comment,
+  Reaction,
+} from '../models/index.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { AuthRequest } from '../middleware/auth.js';
 import { uploadFile } from '../services/mediaStorage.js';
@@ -135,7 +143,8 @@ export const updateUserProfile = async (
       displayName: displayName !== undefined ? displayName : user.displayName,
       bio: bio !== undefined ? bio : user.bio,
       avatarUrl: avatarUrl !== undefined ? avatarUrl : user.avatarUrl,
-      coverPhotoUrl: coverPhotoUrl !== undefined ? coverPhotoUrl : user.coverPhotoUrl,
+      coverPhotoUrl:
+        coverPhotoUrl !== undefined ? coverPhotoUrl : user.coverPhotoUrl,
     });
 
     // Update or create user profile
@@ -302,4 +311,3 @@ export const uploadCoverPhoto = async (
     next(error);
   }
 };
-
