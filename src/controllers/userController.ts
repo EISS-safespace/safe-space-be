@@ -62,7 +62,7 @@ export const getUserProfile = async (
     // Transform posts to add counts and hasUserReacted
     const transformedPosts = await Promise.all(
       posts.map(async (post) => {
-        const postData = post.toJSON() as Record<string, unknown>;
+        const postData = post.toJSON();
 
         // Get comment count
         const commentCount = await Comment.count({
