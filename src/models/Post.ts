@@ -11,11 +11,10 @@ export enum PostType {
 export enum TriggerWarning {
   ANXIETY = 'anxiety',
   DEPRESSION = 'depression',
-  SELF_HARM = 'self_harm',
   EATING_DISORDER = 'eating_disorder',
   SUBSTANCE_ABUSE = 'substance_abuse',
   TRAUMA = 'trauma',
-  SUICIDE = 'suicide',
+  VIOLENCE = 'violence',
 }
 
 interface PostAttributes {

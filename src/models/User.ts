@@ -9,6 +9,7 @@ interface UserAttributes {
   displayName?: string;
   bio?: string;
   avatarUrl?: string;
+  coverPhotoUrl?: string;
   isVerifiedTherapist: boolean;
   allowAnonymous: boolean;
   emailVerified: boolean;
@@ -39,6 +40,7 @@ class User
   declare displayName?: string;
   declare bio?: string;
   declare avatarUrl?: string;
+  declare coverPhotoUrl?: string;
   declare isVerifiedTherapist: boolean;
   declare allowAnonymous: boolean;
   declare emailVerified: boolean;
@@ -88,6 +90,10 @@ User.init(
       allowNull: true,
     },
     avatarUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    coverPhotoUrl: {
       type: DataTypes.STRING,
       allowNull: true,
     },
