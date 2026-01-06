@@ -20,16 +20,28 @@ Comprehensive test suite for SafeSpace microservices architecture, covering Auth
 services/
 ├── auth-service/
 │   ├── __tests__/
-│   │   └── auth.test.ts          (253 lines, 15 test cases)
-│   └── vitest.config.ts
+│   │   ├── auth.test.ts          (253 lines, 15 test cases)
+│   │   ├── integration.test.ts   (180 lines, 8 test cases)
+│   │   └── utils/
+│   │       └── testHelpers.ts    (Reusable test utilities)
+│   ├── vitest.config.ts
+│   └── .env.test
 ├── content-service/
 │   ├── __tests__/
-│   │   └── content.test.ts       (344 lines, 20 test cases)
-│   └── vitest.config.ts
+│   │   ├── content.test.ts       (344 lines, 20 test cases)
+│   │   ├── integration.test.ts   (200 lines, 10 test cases)
+│   │   └── utils/
+│   │       └── testHelpers.ts    (Reusable test utilities)
+│   ├── vitest.config.ts
+│   └── .env.test
 └── media-service/
     ├── __tests__/
-    │   └── media.test.ts         (185 lines, 10 test cases)
-    └── vitest.config.ts
+    │   ├── media.test.ts         (185 lines, 10 test cases)
+    │   ├── integration.test.ts   (170 lines, 8 test cases)
+    │   └── utils/
+    │       └── testHelpers.ts    (Reusable test utilities)
+    ├── vitest.config.ts
+    └── .env.test
 ```
 
 ---
@@ -152,13 +164,30 @@ npm test
 
 ## Running All Tests
 
-### Run all microservice tests:
+### Quick Start - Run All Tests:
 
 ```bash
 # From safe-space-be directory
-cd services/auth-service && npm test && cd ../..
-cd services/content-service && npm test && cd ../..
-cd services/media-service && npm test && cd ../..
+./run-all-tests.sh
+```
+
+This script will:
+- ✅ Install dependencies if needed
+- ✅ Run tests for all 3 services
+- ✅ Display colored output
+- ✅ Show summary of results
+
+### Run Individual Service Tests:
+
+```bash
+# Auth Service
+cd services/auth-service && npm test
+
+# Content Service
+cd services/content-service && npm test
+
+# Media Service
+cd services/media-service && npm test
 ```
 
 ### Run with coverage:
@@ -169,16 +198,31 @@ cd services/content-service && npm test -- --coverage
 cd services/media-service && npm test -- --coverage
 ```
 
+### Run specific test files:
+
+```bash
+# Run only integration tests
+npm test integration.test.ts
+
+# Run only unit tests
+npm test auth.test.ts
+```
+
 ---
 
 ## Test Statistics
 
 | Service | Test Files | Test Cases | Lines of Code |
 |---------|-----------|------------|---------------|
-| Auth Service | 1 | 15 | 253 lines |
-| Content Service | 1 | 20 | 344 lines |
-| Media Service | 1 | 10 | 185 lines |
-| **Total** | **3** | **45** | **782 lines** |
+| Auth Service | 2 | 23 | 433 lines |
+| Content Service | 2 | 30 | 544 lines |
+| Media Service | 2 | 18 | 355 lines |
+| **Total** | **6** | **71** | **1,332 lines** |
+
+**Additional Files**:
+- Test Helpers: 3 files (~400 lines)
+- Environment Configs: 3 files
+- Test Runner Script: 1 file
 
 ---
 
