@@ -9,7 +9,14 @@ import tseslint from 'typescript-eslint';
 // You should change it to your needs following the documentation.
 export default tseslint.config(
   {
-    ignores: ['**/build/**', '**/tmp/**', '**/coverage/**', '**/api-gateway/**', '**/nginx/**'],
+    ignores: [
+      '**/build/**',
+      '**/tmp/**',
+      '**/coverage/**',
+      '**/api-gateway/**',
+      '**/nginx/**',
+      '**/services/**', // Microservices have their own tsconfig files
+    ],
   },
   eslint.configs.recommended,
   eslintConfigPrettier,
