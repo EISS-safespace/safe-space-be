@@ -21,7 +21,12 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Routes
-app.use('/', authRoutes);
+app.use('/auth', authRoutes);
+
+// Health check at root level
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', service: 'auth-service' });
+});
 
 // Error handling
 app.use(errorHandler);

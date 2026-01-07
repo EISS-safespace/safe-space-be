@@ -1,4 +1,4 @@
-import PostMedia from './PostMedia.js';
+import PostMedia, { MediaType } from './PostMedia.js';
 
-export { PostMedia };
+export { PostMedia, MediaType };
 

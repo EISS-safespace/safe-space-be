@@ -6,6 +6,8 @@ import {
   uploadImages,
   getMedia,
   deleteMedia,
+  uploadPostImages,
+  uploadPostAudio,
 } from '../controllers/mediaController.js';
 
 const router = Router();
@@ -20,6 +22,10 @@ router.post('/upload', authenticate, upload.single('image'), uploadImage);
 
 // Upload multiple images
 router.post('/upload-multiple', authenticate, upload.array('images', 5), uploadImages);
+
+// Post media routes
+router.post('/posts/:postId/images', authenticate, upload.array('images', 5), uploadPostImages);
+router.post('/posts/:postId/audio', authenticate, upload.single('audio'), uploadPostAudio);
 
 // Get media by ID
 router.get('/:id', getMedia);

@@ -64,10 +64,5 @@ router.post('/logout', logout);
 // Validate token (for inter-service communication)
 router.get('/validate', validateToken);
 
-// Health check
-router.get('/health', (req, res) => {
-  res.json({ status: 'healthy', service: 'auth-service' });
-});
-
 export default router;
 

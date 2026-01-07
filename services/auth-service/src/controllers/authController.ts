@@ -2,10 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
 import { User, Session, VerificationToken, LoginAttempt } from '../models/index.js';
 import { hashPassword, comparePassword } from '../utils/password.js';
-import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwt.js';
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken, verifyAccessToken } from '../utils/jwt.js';
 import { sendVerificationEmail, sendPasswordResetEmail } from '../utils/email.js';
 import { config } from '../config/index.js';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 
 // Custom error class
 export class AppError extends Error {
@@ -216,12 +216,12 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
     const { token } = req.body;
 
     const verificationToken = await VerificationToken.findOne({
-      where: {
-        token,
-        type: 'email_verification',
-        usedAt: null,
-        expiresAt: { [Op.gt]: new Date() },
-      },
+      where: Sequelize.and(
+        { token },
+        { type: 'email_verification' },
+        Sequelize.where(Sequelize.col('usedAt'), 'IS', null),
+        { expiresAt: { [Op.gt]: new Date() } }
+      ),
     });
 
     if (!verificationToken) {
@@ -305,8 +305,7 @@ export const validateToken = async (req: Request, res: Response, next: NextFunct
     }
 
     const token = authHeader.substring(7);
-    const jwt = await import('jsonwebtoken');
-    const decoded = jwt.verify(token, config.jwt.secret) as { userId: string };
+    const decoded = verifyAccessToken(token);
 
     const user = await User.findByPk(decoded.userId, {
       attributes: ['id', 'email', 'username', 'emailVerified', 'accountLocked'],

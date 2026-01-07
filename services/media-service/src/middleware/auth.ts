@@ -25,7 +25,7 @@ export const authenticate = async (
     }
 
     // Validate token with auth service
-    const response = await axios.get(`${config.services.auth}/validate`, {
+    const response = await axios.get(`${config.services.auth}/auth/validate`, {
       headers: { Authorization: authHeader },
     });
 

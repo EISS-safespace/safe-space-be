@@ -5,6 +5,7 @@ import Reaction from './Reaction.js';
 import HopeStory from './HopeStory.js';
 import Quote from './Quote.js';
 import PostRevision from './PostRevision.js';
+import MoodEntry from './MoodEntry.js';
 
 // Define associations
 User.hasMany(Post, { foreignKey: 'userId', as: 'posts' });
@@ -37,5 +38,8 @@ Quote.belongsTo(User, { foreignKey: 'submittedBy', as: 'submitter' });
 Post.hasMany(PostRevision, { foreignKey: 'postId', as: 'revisions' });
 PostRevision.belongsTo(Post, { foreignKey: 'postId', as: 'post' });
 
-export { User, Post, Comment, Reaction, HopeStory, Quote, PostRevision };
+User.hasMany(MoodEntry, { foreignKey: 'userId', as: 'moodEntries' });
+MoodEntry.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
+export { User, Post, Comment, Reaction, HopeStory, Quote, PostRevision, MoodEntry };
 
