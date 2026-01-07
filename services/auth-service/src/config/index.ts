@@ -29,6 +29,7 @@ export const config = {
   },
   
   auth: {
+    bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || '10'),
     maxLoginAttempts: parseInt(process.env.MAX_LOGIN_ATTEMPTS || '5'),
     rateLimitWindowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'),
     rateLimitMaxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100'),

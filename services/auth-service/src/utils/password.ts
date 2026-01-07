@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { config } from '../config/index.js';
 
 export const hashPassword = async (password: string): Promise<string> => {
-  return bcrypt.hash(password, config.bcryptRounds);
+  return bcrypt.hash(password, config.auth.bcryptRounds);
 };
 
 export const comparePassword = async (

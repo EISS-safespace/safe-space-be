@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import { config } from '../config/index.js';
 
@@ -8,18 +8,18 @@ export interface TokenPayload {
 }
 
 export const generateAccessToken = (userId: string): string => {
-  return jwt.sign({ userId, type: 'access' }, config.jwtSecret, {
-    expiresIn: '15m', // Short-lived access token
-  });
+  return jwt.sign(
+    { userId, type: 'access' },
+    config.jwt.secret,
+    { expiresIn: config.jwt.expiresIn as any }
+  );
 };
 
 export const generateRefreshToken = (userId: string): string => {
   return jwt.sign(
     { userId, type: 'refresh', jti: uuidv4() },
-    config.jwtSecret,
-    {
-      expiresIn: '7d', // Long-lived refresh token
-    },
+    config.jwt.secret,
+    { expiresIn: config.jwt.refreshExpiresIn as any }
   );
 };
 
@@ -29,11 +29,11 @@ export const generateToken = (userId: string): string => {
 };
 
 export const verifyToken = (token: string): TokenPayload => {
-  return jwt.verify(token, config.jwtSecret) as TokenPayload;
+  return jwt.verify(token, config.jwt.secret) as TokenPayload;
 };
 
 export const verifyAccessToken = (token: string): TokenPayload => {
-  const payload = jwt.verify(token, config.jwtSecret) as TokenPayload;
+  const payload = jwt.verify(token, config.jwt.secret) as TokenPayload;
   if (payload.type && payload.type !== 'access') {
     throw new Error('Invalid token type');
   }
@@ -41,7 +41,7 @@ export const verifyAccessToken = (token: string): TokenPayload => {
 };
 
 export const verifyRefreshToken = (token: string): TokenPayload => {
-  const payload = jwt.verify(token, config.jwtSecret) as TokenPayload;
+  const payload = jwt.verify(token, config.jwt.secret) as TokenPayload;
   if (payload.type && payload.type !== 'refresh') {
     throw new Error('Invalid token type');
   }

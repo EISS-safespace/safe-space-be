@@ -8,6 +8,8 @@ interface UserAttributes {
   username: string;
   displayName?: string;
   avatarUrl?: string;
+  bio?: string;
+  coverPhotoUrl?: string;
   isVerifiedTherapist: boolean;
   emailVerified: boolean;
   createdAt?: Date;
@@ -26,6 +28,8 @@ class User
   declare username: string;
   declare displayName?: string;
   declare avatarUrl?: string;
+  declare bio?: string;
+  declare coverPhotoUrl?: string;
   declare isVerifiedTherapist: boolean;
   declare emailVerified: boolean;
   declare readonly createdAt: Date;
@@ -54,6 +58,14 @@ User.init(
       allowNull: true,
     },
     avatarUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    bio: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    coverPhotoUrl: {
       type: DataTypes.STRING,
       allowNull: true,
     },
